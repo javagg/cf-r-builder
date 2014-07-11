@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -e
+
+export R_VERSION=3.1.1
+
+cd /var/cache/R
+if [ ! -f /var/cache/R/R-${R_VERSION}.tar.gz ]; then
+  wget -q -O /var/cache/R/R-${R_VERSION}.tar.gz http://cran.rstudio.com/src/base/R-3/R-${R_VERSION}.tar.gz
+fi
+tar zxf /var/cache/R/R-${R_VERSION}.tar.gz
+
+pushd R-${R_VERSION}
+ ./configure --prefix=/app/R
+make
+make install
+popd
+
+cd /app
+tar cjvf R-${R_VERSION}.tar.bz2 R
+mkdir -p /var/cache/R/out
+cp R-${R_VERSION}.tar.bz2 /var/cache/R/out
